@@ -1,0 +1,42 @@
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" routerLink="/">
+      <span class="brand-ball" aria-hidden="true"></span>
+      PadelBook
+    </a>
+    <nav aria-label="Principal">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Reservar
+      </a>
+      <a routerLink="/mis-reservas" routerLinkActive="active" ariaCurrentWhenActive="page">
+        Mis reservas
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <router-outlet />
+</main>
+
+<!-- Always in the DOM so screen readers announce new messages. -->
+<div class="toast-region" role="status" aria-live="polite">
+  @if (toaster.message(); as message) {
+    <div class="toast">
+      <span>{{ message }}</span>
+      <button
+        type="button"
+        class="toast-close"
+        aria-label="Cerrar aviso"
+        (click)="toaster.dismiss()"
+      >
+        ×
+      </button>
+    </div>
+  }
+</div>

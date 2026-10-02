@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: padel-booking
+  datasource:
+    url: jdbc:h2:file:./data/padel;AUTO_SERVER=TRUE
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  mvc:
+    problemdetails:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

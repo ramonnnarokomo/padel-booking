@@ -1,0 +1,128 @@
+<dialog
+  #dialog
+  aria-labelledby="panel-title"
+  (close)="closed.emit()"
+  (click)="onDialogClick($event)"
+>
+  <form class="panel" [formRoot]="playerForm">
+    <header class="panel-header">
+      <h2 id="panel-title">Nueva reserva</h2>
+      <button type="button" class="close-btn" aria-label="Cerrar" (click)="close()">×</button>
+    </header>
+
+    <dl class="summary">
+      <div>
+        <dt>Pista</dt>
+        <dd>{{ court().courtName }} · {{ court().indoor ? 'Cubierta' : 'Exterior' }}</dd>
+      </div>
+      <div>
+        <dt>Día</dt>
+        <dd>{{ day().date | longDate }}</dd>
+      </div>
+      <div>
+        <dt>Hora</dt>
+        <dd>
+          {{ time() }}
+          @if (endTime(); as end) {
+            – {{ end }}
+          }
+        </dd>
+      </div>
+    </dl>
+
+    <fieldset class="durations">
+      <legend>Duración</legend>
+      <div class="segmented">
+        @for (option of options(); track option.minutes) {
+          <label class="segment" [class.segment-disabled]="!option.available">
+            <input
+              type="radio"
+              name="duration"
+              [value]="option.minutes"
+              [checked]="duration() === option.minutes"
+              [disabled]="!option.available"
+              (change)="duration.set(option.minutes)"
+            />
+            <span>{{ option.minutes }} min</span>
+          </label>
+        }
+      </div>
+      @if (duration() === null) {
+        <p class="hint">No queda hueco para reservar desde esta hora.</p>
+      } @else if (someUnavailable()) {
+        <p class="hint">Las duraciones tachadas pisan otra reserva o acaban después del cierre.</p>
+      }
+    </fieldset>
+
+    <div class="field">
+      <label for="player-name">Nombre</label>
+      <input
+        id="player-name"
+        class="input"
+        type="text"
+        autocomplete="name"
+        aria-describedby="player-name-error"
+        [formField]="playerForm.playerName"
+        [attr.aria-invalid]="playerForm.playerName().touched() && playerForm.playerName().invalid()"
+      />
+      <div id="player-name-error">
+        @if (playerForm.playerName().touched()) {
+          @for (error of playerForm.playerName().errors(); track error.kind) {
+            <p class="field-error">{{ error.message }}</p>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="player-email">Email</label>
+      <input
+        id="player-email"
+        class="input"
+        type="email"
+        autocomplete="email"
+        aria-describedby="player-email-error"
+        [formField]="playerForm.playerEmail"
+        [attr.aria-invalid]="
+          playerForm.playerEmail().touched() && playerForm.playerEmail().invalid()
+        "
+      />
+      <div id="player-email-error">
+        @if (playerForm.playerEmail().touched()) {
+          @for (error of playerForm.playerEmail().errors(); track error.kind) {
+            <p class="field-error">{{ error.message }}</p>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="quote" aria-live="polite">
+      @if (quote.isLoading()) {
+        <span class="muted">Calculando precio…</span>
+      } @else if (quoteError(); as error) {
+        <app-error-alert [error]="error" />
+      } @else if (quote.value(); as currentQuote) {
+        <span class="muted">Precio</span>
+        <strong class="price">{{ currentQuote.price | price }}</strong>
+        @if (currentQuote.peak) {
+          <span class="chip chip-peak">Hora punta +25%</span>
+        }
+      }
+    </div>
+
+    @if (submitError(); as error) {
+      <app-error-alert [error]="error" />
+    }
+
+    <footer class="panel-actions">
+      <button type="button" class="btn" (click)="close()">Cancelar</button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="duration() === null || playerForm().submitting()"
+      >
+        {{ playerForm().submitting() ? 'Reservando…' : 'Confirmar reserva' }}
+      </button>
+    </footer>
+  </form>
+</dialog>

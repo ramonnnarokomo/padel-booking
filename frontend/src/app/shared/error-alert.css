@@ -1,0 +1,25 @@
+.alert {
+  padding: 0.75rem 1rem;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.message {
+  margin: 0;
+  font-weight: 500;
+}
+
+ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.extra {
+  margin-top: 0.75rem;
+}
+
+.extra:empty {
+  display: none;
+}

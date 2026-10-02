@@ -1,0 +1,31 @@
+@let b = booking();
+
+<article class="card">
+  <header class="card-header">
+    <h2>{{ b.courtName }}</h2>
+    @if (b.peak) {
+      <span class="chip chip-peak">Hora punta +25%</span>
+    }
+  </header>
+
+  <p class="date">{{ b.start | longDate }}</p>
+  <p class="muted">{{ b.start | timeRange: b.end }} · {{ b.durationMinutes }} min</p>
+  <p class="price">{{ b.price | price }}</p>
+
+  <footer>
+    <button
+      type="button"
+      class="btn btn-danger"
+      [disabled]="!b.cancellable || busy()"
+      [attr.aria-describedby]="b.cancellable ? null : 'cancel-hint-' + b.id"
+      (click)="cancelRequested.emit(b)"
+    >
+      {{ busy() ? 'Cancelando…' : 'Cancelar' }}
+    </button>
+    @if (!b.cancellable) {
+      <p class="hint" [id]="'cancel-hint-' + b.id">
+        Ya no se puede cancelar: solo hasta 24 h antes del inicio.
+      </p>
+    }
+  </footer>
+</article>

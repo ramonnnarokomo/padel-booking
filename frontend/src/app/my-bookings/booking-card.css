@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+p {
+  margin: 0.25rem 0 0;
+}
+
+.date {
+  margin-top: 0.75rem;
+  font-weight: 500;
+}
+
+.price {
+  margin-top: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+footer {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.hint {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}

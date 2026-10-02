@@ -1,0 +1,76 @@
+<div class="page-header">
+  <h1>Mis reservas</h1>
+  <p class="muted">
+    Consulta y cancela tus próximas reservas. Máximo 2 reservas activas por email.
+  </p>
+</div>
+
+<form class="card search" [formRoot]="searchForm">
+  <div class="field">
+    <label for="search-email">Email de la reserva</label>
+    <div class="search-row">
+      <input
+        id="search-email"
+        class="input"
+        type="email"
+        autocomplete="email"
+        aria-describedby="search-email-error"
+        [formField]="searchForm.email"
+        [attr.aria-invalid]="searchForm.email().touched() && searchForm.email().invalid()"
+      />
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+    <div id="search-email-error">
+      @if (searchForm.email().touched()) {
+        @for (error of searchForm.email().errors(); track error.kind) {
+          <p class="field-error">{{ error.message }}</p>
+        }
+      }
+    </div>
+  </div>
+</form>
+
+<section class="results" [attr.aria-busy]="bookings.isLoading()">
+  @if (cancelError(); as error) {
+    <app-error-alert [error]="error" />
+  }
+
+  @if (!email()) {
+    <p class="state">Introduce el email con el que reservaste para ver tus reservas.</p>
+  } @else if (bookingsError(); as error) {
+    <app-error-alert [error]="error">
+      <button
+        type="button"
+        class="btn"
+        [disabled]="bookings.isLoading()"
+        (click)="bookings.reload()"
+      >
+        Reintentar
+      </button>
+    </app-error-alert>
+  } @else if (bookings.value(); as list) {
+    @if (list.length === 0) {
+      <div class="card state">
+        <p>
+          No hay reservas próximas para <strong>{{ email() }}</strong
+          >.
+        </p>
+        <a class="btn btn-primary" routerLink="/">Reservar una pista</a>
+      </div>
+    } @else {
+      <ul class="booking-list">
+        @for (booking of list; track booking.id) {
+          <li>
+            <app-booking-card
+              [booking]="booking"
+              [busy]="cancellingId() === booking.id"
+              (cancelRequested)="cancel($event)"
+            />
+          </li>
+        }
+      </ul>
+    }
+  } @else {
+    <p class="state">Buscando reservas…</p>
+  }
+</section>

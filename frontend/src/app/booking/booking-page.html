@@ -1,0 +1,139 @@
+<div class="page-header">
+  <h1>Reservar pista</h1>
+  <p class="muted">Elige un hueco libre. Reservas de 60, 90 o 120 minutos, hasta 14 días vista.</p>
+</div>
+
+<div class="toolbar">
+  <h2 id="day-title" class="day-title">{{ date() | longDate }}</h2>
+
+  <div class="day-nav" role="group" aria-label="Cambiar de día">
+    <button
+      type="button"
+      class="btn"
+      aria-label="Día anterior"
+      [disabled]="date() <= today"
+      (click)="moveDays(-1)"
+    >
+      ‹
+    </button>
+    <button type="button" class="btn" [disabled]="date() === today" (click)="goTo(today)">
+      Hoy
+    </button>
+    <label class="visually-hidden" for="day-input">Fecha</label>
+    <input
+      id="day-input"
+      class="input date-input"
+      type="date"
+      [min]="today"
+      [max]="lastDay"
+      [value]="date()"
+      (change)="onDateChange($event)"
+    />
+    <button
+      type="button"
+      class="btn"
+      aria-label="Día siguiente"
+      [disabled]="date() >= lastDay"
+      (click)="moveDays(1)"
+    >
+      ›
+    </button>
+  </div>
+</div>
+
+<section class="card schedule" aria-labelledby="day-title" [attr.aria-busy]="schedule.isLoading()">
+  @if (scheduleError(); as error) {
+    <app-error-alert [error]="error">
+      <button
+        type="button"
+        class="btn"
+        [disabled]="schedule.isLoading()"
+        (click)="schedule.reload()"
+      >
+        Reintentar
+      </button>
+    </app-error-alert>
+  } @else if (day(); as day) {
+    @if (day.courts.length === 0) {
+      <p class="state">No hay pistas disponibles en el club.</p>
+    } @else {
+      <div class="grid-scroll" tabindex="0" aria-label="Parrilla de horarios">
+        <table class="grid">
+          <thead>
+            <tr>
+              <th scope="col" class="time-cell">Hora</th>
+              @for (court of day.courts; track court.courtId) {
+                <th scope="col" class="court-head">
+                  <span class="court-name">{{ court.courtName }}</span>
+                  <span class="court-meta">
+                    <span class="badge" [class.badge-indoor]="court.indoor">
+                      {{ court.indoor ? 'Cubierta' : 'Exterior' }}
+                    </span>
+                    {{ court.pricePerHour | price }}/h
+                  </span>
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.time) {
+              <tr>
+                <th scope="row" class="time-cell">{{ row.time }}</th>
+                @for (cell of row.cells; track cell.court.courtId) {
+                  <td>
+                    @switch (cell.state) {
+                      @case ('free') {
+                        <button
+                          type="button"
+                          class="slot slot-free"
+                          [attr.aria-label]="
+                            'Reservar ' + cell.court.courtName + ' a las ' + row.time
+                          "
+                          (click)="select(day, cell.court, row.time)"
+                        >
+                          Libre
+                        </button>
+                      }
+                      @case ('booked') {
+                        <span class="slot slot-booked">Ocupada</span>
+                      }
+                      @case ('too-short') {
+                        <span class="slot slot-off" title="No queda hueco para 60 minutos">
+                          <span class="visually-hidden">No disponible</span>
+                        </span>
+                      }
+                      @case ('past') {
+                        <span class="slot slot-off slot-past">
+                          <span class="visually-hidden">Hora pasada</span>
+                        </span>
+                      }
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="legend">
+        <li><span class="swatch swatch-free"></span>Libre</li>
+        <li><span class="swatch swatch-booked"></span>Ocupada</li>
+        <li><span class="swatch swatch-off"></span>No disponible</li>
+        <li class="muted">Hora punta (lun–vie desde las 18:00): +25%</li>
+      </ul>
+    }
+  } @else {
+    <p class="state">Cargando horarios…</p>
+  }
+</section>
+
+@if (selected(); as slot) {
+  <app-booking-panel
+    [day]="slot.day"
+    [court]="slot.court"
+    [time]="slot.time"
+    (booked)="onBooked()"
+    (closed)="selected.set(null)"
+  />
+}

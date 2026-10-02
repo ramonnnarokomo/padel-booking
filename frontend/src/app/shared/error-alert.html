@@ -1,0 +1,13 @@
+<div class="alert" role="alert">
+  <p class="message">{{ error().message }}</p>
+  @if (error().fieldErrors.length > 0) {
+    <ul>
+      @for (fieldError of error().fieldErrors; track fieldError.field) {
+        <li>
+          <strong>{{ label(fieldError.field) }}:</strong> {{ fieldError.message }}
+        </li>
+      }
+    </ul>
+  }
+  <div class="extra"><ng-content /></div>
+</div>

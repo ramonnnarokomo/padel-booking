@@ -1,0 +1,101 @@
+.topbar {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.topbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  min-height: 3.75rem;
+  padding-block: 0.5rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.brand-ball {
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #bef264, #65a30d);
+}
+
+nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+nav a {
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+nav a:hover {
+  background: #f3f4f6;
+  color: var(--text);
+}
+
+nav a.active {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+main {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.toast-region {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  z-index: 10;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.75rem 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: #111827;
+  color: #fff;
+  box-shadow: 0 10px 25px rgb(15 23 42 / 0.25);
+  font-weight: 500;
+}
+
+.toast-close {
+  border: 0;
+  background: transparent;
+  color: #d1d5db;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  .brand {
+    font-size: 1rem;
+  }
+
+  nav a {
+    padding-inline: 0.5rem;
+    font-size: 0.9375rem;
+  }
+}

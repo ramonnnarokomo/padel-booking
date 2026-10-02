@@ -1,0 +1,17 @@
+# Build output
+target/
+
+# Local H2 database files
+data/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+# OS
+.DS_Store
