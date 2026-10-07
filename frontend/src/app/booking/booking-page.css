@@ -169,6 +169,20 @@ thead .time-cell {
   outline-offset: -3px;
 }
 
+/* Peak hours (weekdays from 18:00): amber mark on the hour and tinted free slots. */
+.row-peak .time-cell {
+  color: #b45309;
+  box-shadow: inset 3px 0 0 #f59e0b;
+}
+
+.row-peak .slot-free {
+  background: #fffbeb;
+}
+
+.row-peak .slot-free:hover {
+  background: var(--accent-soft);
+}
+
 .slot-booked {
   background: #e5e7eb;
   color: #4b5563;
@@ -214,4 +228,9 @@ thead .time-cell {
 
 .swatch-off {
   background: #f3f4f6;
+}
+
+.swatch-peak {
+  background: #fffbeb;
+  border-color: #f59e0b;
 }

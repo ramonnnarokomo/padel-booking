@@ -4,6 +4,7 @@ import {
   durationOptions,
   isDurationAvailable,
   isPastSlot,
+  isPeakSlot,
   slotState,
   toMinutes,
   toTime,
@@ -79,6 +80,18 @@ describe('availability', () => {
     expect(isPastSlot('2026-10-05', '18:00', now)).toBe(true);
     expect(isPastSlot('2026-10-05', '18:30', now)).toBe(false);
     expect(isPastSlot('2026-10-04', '22:30', now)).toBe(true);
+  });
+
+  it('marks weekday slots from 18:00 as peak hours', () => {
+    // 5 Oct 2026 is a Monday and 9 Oct a Friday.
+    expect(isPeakSlot('2026-10-05', '17:30')).toBe(false);
+    expect(isPeakSlot('2026-10-05', '18:00')).toBe(true);
+    expect(isPeakSlot('2026-10-09', '22:30')).toBe(true);
+  });
+
+  it('has no peak hours at weekends', () => {
+    expect(isPeakSlot('2026-10-10', '18:00')).toBe(false); // Saturday
+    expect(isPeakSlot('2026-10-11', '21:00')).toBe(false); // Sunday
   });
 
   it('computes the state of each grid cell', () => {

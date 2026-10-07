@@ -7,11 +7,19 @@ import { Toaster } from '../core/toaster';
 import { addDays, todayIso } from '../shared/dates';
 import { ErrorAlert } from '../shared/error-alert';
 import { LongDatePipe, PricePipe } from '../shared/format-pipes';
-import { BOOKING_WINDOW_DAYS, SlotState, buildTimeSlots, slotState } from './availability';
+import {
+  BOOKING_WINDOW_DAYS,
+  SlotState,
+  buildTimeSlots,
+  isPeakSlot,
+  slotState,
+} from './availability';
 import { BookingPanel } from './booking-panel';
 
 interface GridRow {
   time: string;
+  /** Peak hours: the price is 25% higher. */
+  peak: boolean;
   cells: { court: CourtSchedule; state: SlotState }[];
 }
 
@@ -61,9 +69,13 @@ export class BookingPage {
     const now = this.now();
     return buildTimeSlots(day.openingTime, day.closingTime, day.slotMinutes).map((time) => ({
       time,
+      peak: isPeakSlot(day.date, time),
       cells: day.courts.map((court) => ({ court, state: slotState(day, court, time, now) })),
     }));
   });
+
+  /** False on weekends, where there is no peak surcharge. */
+  protected readonly hasPeakHours = computed(() => this.rows().some((row) => row.peak));
 
   protected readonly selected = signal<SelectedSlot | null>(null);
 

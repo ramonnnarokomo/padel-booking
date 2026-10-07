@@ -1,10 +1,13 @@
 import { CourtSchedule, DaySchedule } from '../core/models';
+import { parseIsoDate } from '../shared/dates';
 
 // Pure functions (no Angular) that decide what can be booked. The backend validates
 // the same rules again; this is only so the UI never offers an impossible option.
 
 export const DURATIONS = [60, 90, 120] as const;
 export const BOOKING_WINDOW_DAYS = 14;
+/** Same rule as BookingRules.isPeak in the backend: Monday to Friday from 18:00. */
+export const PEAK_FROM = '18:00';
 
 export type SlotState = 'free' | 'booked' | 'past' | 'too-short';
 
@@ -70,6 +73,12 @@ export function durationOptions(
     minutes,
     available: isDurationAvailable(day, court, start, minutes),
   }));
+}
+
+/** True for a booking that starts at peak hours, so it costs 25% more. */
+export function isPeakSlot(date: string, time: string): boolean {
+  const weekday = parseIsoDate(date).getDay(); // 0 = Sunday, 6 = Saturday
+  return weekday >= 1 && weekday <= 5 && toMinutes(time) >= toMinutes(PEAK_FROM);
 }
 
 export function isPastSlot(date: string, time: string, now: Date): boolean {

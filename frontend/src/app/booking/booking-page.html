@@ -77,8 +77,13 @@
           </thead>
           <tbody>
             @for (row of rows(); track row.time) {
-              <tr>
-                <th scope="row" class="time-cell">{{ row.time }}</th>
+              <tr [class.row-peak]="row.peak">
+                <th scope="row" class="time-cell" [attr.title]="row.peak ? 'Hora punta: +25%' : null">
+                  {{ row.time }}
+                  @if (row.peak) {
+                    <span class="visually-hidden">(hora punta)</span>
+                  }
+                </th>
                 @for (cell of row.cells; track cell.court.courtId) {
                   <td>
                     @switch (cell.state) {
@@ -87,7 +92,11 @@
                           type="button"
                           class="slot slot-free"
                           [attr.aria-label]="
-                            'Reservar ' + cell.court.courtName + ' a las ' + row.time
+                            'Reservar ' +
+                            cell.court.courtName +
+                            ' a las ' +
+                            row.time +
+                            (row.peak ? ' (hora punta)' : '')
                           "
                           (click)="select(day, cell.court, row.time)"
                         >
@@ -120,7 +129,11 @@
         <li><span class="swatch swatch-free"></span>Libre</li>
         <li><span class="swatch swatch-booked"></span>Ocupada</li>
         <li><span class="swatch swatch-off"></span>No disponible</li>
-        <li class="muted">Hora punta (lun–vie desde las 18:00): +25%</li>
+        @if (hasPeakHours()) {
+          <li><span class="swatch swatch-peak"></span>Hora punta (desde las 18:00): +25%</li>
+        } @else {
+          <li class="muted">Fin de semana: sin recargo de hora punta</li>
+        }
       </ul>
     }
   } @else {
