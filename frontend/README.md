@@ -1,6 +1,6 @@
 # PadelBook · frontend
 
-Frontend en Angular 22 de una app para reservar pistas de pádel. Consume la API REST del
+Frontend en Angular 21 de una app para reservar pistas de pádel. Consume la API REST del
 backend Spring Boot de este mismo repositorio (`../backend`).
 
 - **Reservar**: parrilla de horarios por pista (franjas de 30 min, 09:00–23:00), navegación
@@ -14,7 +14,7 @@ Componentes standalone, signals (`signal`, `computed`, `linkedSignal`, `input`, 
 
 ## Requisitos
 
-- Node.js 22.22.3+ o 24.15+ (lo que pide Angular CLI 22)
+- Node.js 20.19+, 22.12+ o 24+ (lo que pide Angular CLI 21)
 - El backend arrancado en `http://localhost:8080`
 
 ## Arrancar en local

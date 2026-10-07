@@ -3,3 +3,6 @@
 Thumbs.db
 .idea/
 *.iml
+
+# Base de datos H2 local (si arrancas el backend desde la raíz del repo)
+data/

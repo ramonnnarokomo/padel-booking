@@ -3,11 +3,11 @@
 App para reservar pistas de pádel: parrilla de horarios por pista, reserva con precio en vivo y gestión de "mis reservas". El backend aplica las reglas de un club real: horario, franjas de 30 minutos, hora punta, antelación máxima, límite de reservas por persona y política de cancelación.
 
 - **Backend:** Java 17 + Spring Boot 3.5 (Web, Data JPA, Validation) + H2 + springdoc-openapi (`backend/`)
-- **Frontend:** Angular 22 con componentes standalone, signals y CSS propio (`frontend/`)
+- **Frontend:** Angular 21 con componentes standalone, signals y CSS propio (`frontend/`)
 
 ## Arrancar en local
 
-Requisitos: JDK 17+, Maven y Node.js 22.22.3+ o 24.15+.
+Requisitos: JDK 17+, Maven y Node.js 20.19+, 22.12+ o 24+.
 
 ```bash
 # Backend: http://localhost:8080 (Swagger UI en /swagger-ui.html)
