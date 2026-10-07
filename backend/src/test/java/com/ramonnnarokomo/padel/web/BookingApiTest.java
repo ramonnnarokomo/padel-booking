@@ -109,6 +109,26 @@ class BookingApiTest {
     }
 
     @Test
+    void theLocationOfANewBookingReturnsItToItsOwnerOnly() throws Exception {
+        String location = postBooking(indoorCourtId, "ramon@example.com", "2026-10-08T19:00", 60)
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getHeader("Location");
+
+        mockMvc.perform(get(location).param("email", "Ramon@Example.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.courtName").value("Pista 1"))
+                .andExpect(jsonPath("$.start").value("2026-10-08T19:00:00"))
+                .andExpect(jsonPath("$.status").value("CONFIRMED"))
+                .andExpect(jsonPath("$.cancellable").value(true));
+
+        mockMvc.perform(get(location).param("email", "someone-else@example.com"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+        mockMvc.perform(get("/api/bookings/{id}", 999_999).param("email", "ramon@example.com"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void rejectsAnOverlappingBookingOnTheSameCourt() throws Exception {
         createBooking(indoorCourtId, "ramon@example.com", "2026-10-07T10:00", 90);
 
@@ -199,6 +219,11 @@ class BookingApiTest {
                 .andExpect(jsonPath("$", hasSize(0)));
         mockMvc.perform(get("/api/schedule").param("date", "2026-10-08"))
                 .andExpect(jsonPath("$.courts[0].bookedSlots", empty()));
+        // It is still reachable by id, now as cancelled.
+        mockMvc.perform(get("/api/bookings/{id}", id).param("email", "ramon@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CANCELLED"))
+                .andExpect(jsonPath("$.cancellable").value(false));
     }
 
     @Test

@@ -49,6 +49,7 @@ Las reglas viven en una clase Java pura (`BookingRules`) sin dependencias de Spr
 | GET | `/api/quote?courtId=&start=&durationMinutes=` | Precio de una reserva (y si es hora punta) |
 | POST | `/api/bookings` | Crear reserva |
 | GET | `/api/bookings?email=` | Próximas reservas de un email |
+| GET | `/api/bookings/{id}?email=` | Detalle de una reserva (también si está cancelada) |
 | DELETE | `/api/bookings/{id}?email=` | Cancelar reserva |
 
 Los errores siguen el estándar **ProblemDetail (RFC 9457)**: `400` si los datos no son válidos (con un mapa `errors` por campo), `404` si no existe, `409` si la franja ya está ocupada y `422` si se incumple una regla del club.

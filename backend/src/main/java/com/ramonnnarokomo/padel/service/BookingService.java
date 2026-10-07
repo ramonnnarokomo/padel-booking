@@ -69,15 +69,15 @@ public class BookingService {
         return BookingResponse.from(bookingRepository.save(booking), now);
     }
 
-    /**
-     * Cancels a booking of the given player. A wrong email gets the same 404 as an unknown id,
-     * so nobody can find out which bookings exist.
-     */
+    /** One booking of the given player, cancelled ones included, so the URL returned on creation always works. */
+    @Transactional(readOnly = true)
+    public BookingResponse get(Long id, String email) {
+        return BookingResponse.from(findOwnBooking(id, email), now());
+    }
+
     @Transactional
     public void cancel(Long id, String email) {
-        Booking booking = bookingRepository.findById(id)
-                .filter(found -> found.getPlayerEmail().equals(normalizeEmail(email)))
-                .orElseThrow(() -> new NotFoundException("No existe ninguna reserva " + id + " con ese email."));
+        Booking booking = findOwnBooking(id, email);
 
         if (booking.getStatus() == BookingStatus.CANCELLED) {
             throw new BookingRuleException("Esta reserva ya está cancelada.");
@@ -139,6 +139,15 @@ public class BookingService {
         boolean peak = BookingRules.isPeak(start);
         BigDecimal price = BookingRules.price(court.getPricePerHour(), durationMinutes, peak);
         return new QuoteResponse(court.getId(), start, start.plusMinutes(durationMinutes), durationMinutes, price, peak);
+    }
+
+    /**
+     * A wrong email gets the same 404 as an unknown id, so nobody can find out which bookings exist.
+     */
+    private Booking findOwnBooking(Long id, String email) {
+        return bookingRepository.findById(id)
+                .filter(found -> found.getPlayerEmail().equals(normalizeEmail(email)))
+                .orElseThrow(() -> new NotFoundException("No existe ninguna reserva " + id + " con ese email."));
     }
 
     private LocalDateTime now() {

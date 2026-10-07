@@ -60,6 +60,11 @@ public class BookingController {
         return bookingService.upcoming(email);
     }
 
+    @GetMapping("/bookings/{id}")
+    public BookingResponse get(@PathVariable Long id, @RequestParam String email) {
+        return bookingService.get(id, email);
+    }
+
     @DeleteMapping("/bookings/{id}")
     public ResponseEntity<Void> cancel(@PathVariable Long id, @RequestParam String email) {
         bookingService.cancel(id, email);
