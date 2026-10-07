@@ -5,6 +5,12 @@ App para reservar pistas de pádel: parrilla de horarios por pista, reserva con 
 - **Backend:** Java 17 + Spring Boot 3.5 (Web, Data JPA, Validation) + H2 + springdoc-openapi (`backend/`)
 - **Frontend:** Angular 21 con componentes standalone, signals y CSS propio (`frontend/`)
 
+## Capturas
+
+![Parrilla de horarios con la hora punta marcada](docs/reservar.png)
+
+![Mis reservas: próximas reservas de un email con opción de cancelar](docs/mis-reservas.png)
+
 ## Arrancar en local
 
 Requisitos: JDK 17+, Maven y Node.js 20.19+, 22.12+ o 24+.
